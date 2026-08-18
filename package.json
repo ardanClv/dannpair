@@ -1,4 +1,3 @@
-
 {
   "name": "dannpair",
   "version": "1.0.0",
@@ -14,6 +13,6 @@
     "crypto": "^1.0.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=16.0.0"
   }
 }
