@@ -1,0 +1,17 @@
+{
+  "name": "dannpair",
+  "version": "1.0.0",
+  "description": "WA Pairing Spam Tool",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "@whiskeysockets/baileys": "^6.6.0",
+    "pino": "^8.17.2"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
