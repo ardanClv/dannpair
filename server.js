@@ -1,15 +1,3 @@
-// ===== FIX CRYPTO & WEBCRYPTO UNTUK NODE.JS 16 =====
-if (typeof crypto === 'undefined') {
-    global.crypto = require('crypto');
-}
-
-// Fix untuk Web Crypto API (importKey, dll)
-if (typeof globalThis.crypto === 'undefined' || !globalThis.crypto.subtle) {
-    const { webcrypto } = require('node:crypto');
-    globalThis.crypto = webcrypto;
-}
-// ====================================================
-
 const express = require('express');
 const { makeWASocket, useMultiFileAuthState, delay } = require('@whiskeysockets/baileys');
 const pino = require('pino');
