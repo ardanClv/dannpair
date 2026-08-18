@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DannPair - WA Pairing Spam</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:'Courier New',monospace; }
+        body { background:#0a0a0a; color:#25D366; display:flex; justify-content:center; align-items:center; min-height:100vh; }
+        .container { width:90%; max-width:600px; background:#111; border:2px solid #25D366; border-radius:20px; padding:25px; box-shadow:0 0 30px #25D366; }
+        h1 { text-align:center; color:#25D366; text-shadow:0 0 10px #25D366; }
+        .sub { text-align:center; color:#25D366; font-size:14px; margin-bottom:20px; opacity:0.7; }
+        label { display:block; margin:15px 0 5px; color:#25D366; }
+        input, button { width:100%; padding:12px; background:#1a1a1a; border:1px solid #25D366; color:#25D366; border-radius:10px; font-size:16px; }
+        button { background:#25D366; color:#000; font-weight:bold; cursor:pointer; transition:0.3s; }
+        button:hover { background:#128C7E; color:#fff; box-shadow:0 0 20px #25D366; }
+        #log { margin-top:20px; background:#0a0a0a; border:1px solid #25D366; border-radius:10px; padding:15px; max-height:400px; overflow-y:auto; font-size:13px; white-space:pre-wrap; }
+        .success { color:#25D366; }
+        .error { color:#ff4444; }
+        .code { color:#ffdd00; font-weight:bold; }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>⚡ DANN PAIR ⚡</h1>
+    <div class="sub">— WhatsApp Pairing Spam —</div>
+    <label>📱 Nomor Target (62xxx)</label>
+    <input type="text" id="target" placeholder="628123456789" value="628123456789">
+    <label>🔁 Jumlah Pairing Request</label>
+    <input type="number" id="loop" value="5" min="1" max="20">
+    <br><br>
+    <button id="startBtn">🚀 MULAI PAIRING</button>
+    <button id="stopBtn" style="background:#ff4444;color:#fff;margin-top:10px;">⛔ STOP</button>
+    <div id="log">[System] Menunggu perintah, Yang Mulia...</div>
+</div>
+<script>
+    let isRunning = false;
+    let abortController = null;
+
+    document.getElementById('startBtn').onclick = async () => {
+        if (isRunning) return;
+        isRunning = true;
+        abortController = new AbortController();
+        const target = document.getElementById('target').value.trim();
+        const loop = parseInt(document.getElementById('loop').value) || 5;
+        const log = document.getElementById('log');
+
+        log.innerHTML = '[System] Memulai Pairing Spam...\n';
+        let successCount = 0, failCount = 0;
+
+        for (let i = 1; i <= loop; i++) {
+            if (abortController.signal.aborted) break;
+            log.innerHTML += `\n[${i}/${loop}] Mengirim pairing ke ${target}... `;
+            try {
+                const res = await fetch('/api/pair', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ target, loop: 1 }),
+                    signal: abortController.signal
+                });
+                const data = await res.json();
+                if (data.status === 'ok' && data.results) {
+                    const r = data.results[0];
+                    if (r.success) {
+                        successCount++;
+                        log.innerHTML += `✅ ${r.message}\n   🔑 Kode: <span class="code">${r.pairingCode}</span>\n`;
+                    } else {
+                        failCount++;
+                        log.innerHTML += `❌ Gagal: ${r.error}\n`;
+                    }
+                } else {
+                    failCount++;
+                    log.innerHTML += `❌ ${data.message || 'Gagal'}\n`;
+                }
+            } catch (e) {
+                failCount++;
+                log.innerHTML += `⚠️ Error: ${e.message}\n`;
+            }
+            log.scrollTop = log.scrollHeight;
+            await new Promise(r => setTimeout(r, 2000));
+        }
+
+        log.innerHTML += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        log.innerHTML += `📊 <span class="success">SUKSES: ${successCount}</span>  |  ❌ GAGAL: ${failCount}\n`;
+        log.innerHTML += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        log.innerHTML += '\n[System] Selesai, Yang Mulia!';
+        isRunning = false;
+    };
+
+    document.getElementById('stopBtn').onclick = () => {
+        if (abortController) {
+            abortController.abort();
+            isRunning = false;
+            document.getElementById('log').innerHTML += '\n[System] Dihentikan oleh Anda, Yang Mulia.';
+        }
+    };
+</script>
+</body>
+</html>
