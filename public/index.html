@@ -18,6 +18,7 @@
         .success { color:#25D366; }
         .error { color:#ff4444; }
         .code { color:#ffdd00; font-weight:bold; }
+        .summary { background:#1a1a1a; padding:10px; border-radius:10px; margin-top:10px; border:1px solid #25D366; }
     </style>
 </head>
 <body>
@@ -66,6 +67,37 @@
                         log.innerHTML += `✅ ${r.message}\n   🔑 Kode: <span class="code">${r.pairingCode}</span>\n`;
                     } else {
                         failCount++;
+                        log.innerHTML += `❌ Gagal: ${r.error}\n`;
+                    }
+                } else {
+                    failCount++;
+                    log.innerHTML += `❌ ${data.message || 'Gagal'}\n`;
+                }
+            } catch (e) {
+                failCount++;
+                log.innerHTML += `⚠️ Error: ${e.message}\n`;
+            }
+            log.scrollTop = log.scrollHeight;
+            await new Promise(r => setTimeout(r, 2000));
+        }
+
+        log.innerHTML += `\n━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        log.innerHTML += `📊 <span class="success">SUKSES: ${successCount}</span>  |  ❌ GAGAL: ${failCount}\n`;
+        log.innerHTML += `━━━━━━━━━━━━━━━━━━━━━━━━━━━\n`;
+        log.innerHTML += '\n[System] Selesai, Yang Mulia!';
+        isRunning = false;
+    };
+
+    document.getElementById('stopBtn').onclick = () => {
+        if (abortController) {
+            abortController.abort();
+            isRunning = false;
+            document.getElementById('log').innerHTML += '\n[System] Dihentikan oleh Anda, Yang Mulia.';
+        }
+    };
+</script>
+</body>
+</html>                        failCount++;
                         log.innerHTML += `❌ Gagal: ${r.error}\n`;
                     }
                 } else {
