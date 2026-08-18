@@ -1,3 +1,9 @@
+// ===== FIX CRYPTO UNTUK NODE.JS 16 =====
+if (typeof crypto === 'undefined') {
+    global.crypto = require('crypto');
+}
+// =========================================
+
 const express = require('express');
 const { makeWASocket, useMultiFileAuthState, delay } = require('@whiskeysockets/baileys');
 const pino = require('pino');
